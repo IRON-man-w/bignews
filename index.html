@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>大事件-后台首页</title>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 导入bootstrap的js文件 -->
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sider">
+        <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
+        <div class="user_info">
+            <img src="images/2.jpg" alt="person">
+            <span>欢迎&nbsp;&nbsp;李宗盛</span>
+            <b>管理员</b>
+        </div>
+        <div class="menu">
+            <div class="level01 active"><a href="main_count.html" target="main_frame"><i
+                        class="iconfont icon-yidiandiantubiao04"></i><span>首页</span></a></div>
+            <div class="level01"><a href="#"><i class="iconfont icon-icon-article"></i><span>文章管理</span><b
+                        class="iconfont icon-arrowdownl"></b></a></div>
+            <ul class="level02">
+                <li><a href="article_list.html" target="main_frame"><i
+                            class="iconfont icon-previewright"></i><span>文章列表</span></a></li>
+                <li><a href="article_release.html" target="main_frame"><i
+                            class="iconfont icon-previewright"></i><span>发表文章</span></a></li>
+                <li><a href="article_category.html" target="main_frame"><i
+                            class="iconfont icon-previewright"></i><span>文章类别管理</span></a></li>
+            </ul>
+
+            <div class="level01"><a href="comment_list.html" target="main_frame"><i
+                        class="iconfont icon-comment"></i><span>评论管理</span></a>
+            </div>
+            <div class="level01" id="user"><a href="user.html" target="main_frame"><i
+                        class="iconfont icon-user"></i><span>个人中心</span></a></div>
+        </div>
+    </div>
+    <!-- 顶部栏 -->
+    <div class="header_bar">
+        <form class="search_form">
+            <input type="text" placeholder="请输入搜索内容">
+            <i class="iconfont icon-search"></i>
+        </form>
+        <div class="user_center_link">
+            <a href="./user.html" onclick="$('#user').trigger('click')" target="main_frame">个人中心</a>
+            <img src="images/2.jpg" alt="person">
+            <a href="javascript:void(0)" class="logout"><i class="iconfont icon-tuichu"></i> 退出</a>
+        </div>
+    </div>
+    <!-- 右侧主体内容 -->
+    <div class="main" id="main_body">
+        <!-- 右侧添加iframe,默认src指向首页图表页面main_count.html -->
+        <iframe name="main_frame" src="main_count.html" frameborder="0" width="100%" height="100%"></iframe>
+
+    </div>
+
+    <!-- 查询个人信息+退出登录 -->
+    <script>
+        $(function () {
+            /*
+            查询个人信息
+            页面一加载发送ajax请求
+            响应数据之后,渲染到页面
+            */
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/admin/user/info',
+                type: 'get',
+                dataType: 'json',
+                success: function (backData) {
+                    console.log(backData);
+                    //渲染页面
+                    $('.user_info>img').attr('src', backData.data.userPic);
+
+                    $('.user_center_link>img').attr('src', backData.data.userPic);
+
+                    $('.user_info>span').text('欢迎' + backData.data.nickname);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(function () {
+            /*
+              退出登录
+              删除token
+              跳转登录页
+              */
+            $('.logout').click(function () {
+                //删除token
+                localStorage.removeItem('token');
+                //跳转登录页
+                window.location.href = './login.html';
+            });
+
+
+            /*
+            点击左侧导航栏效果
+            */
+            //一级列表
+            $('.level01').click(function () {
+                //排他思想修改样式
+                $(this).addClass('active').siblings().removeClass('active');
+                //如果点击的是文章管理:则应该下滑二级列表ul
+                if ($(this).next().hasClass('level02')) {
+                    //滑入滑出切换
+                    $(this).next().slideToggle();
+                    //旋转90度切换
+                    $(this).find('b').toggleClass('rotate0');
+                    //默认选中第一个 : dom对象
+                    $('.level02>li>a').first()[0].click();
+                } else {
+                    //如果点击的不是文章管理一级菜单列表,则移除二级列表的选中样式
+                    $('.level02>li').removeClass('active');
+                }
+            });
+
+            //二级列表
+            $('.level02>li').click(function () {
+                $(this).addClass('active').siblings().removeClass('active');
+            });
+
+
+            /*
+             页面一加载: ajax请求个人详情信息,渲染页面
+            */
+            $.ajax({
+                url: 'BigNew.user_detail',
+                type: 'get',
+                dataType: 'json',
+                data: '',
+                success: function (backData) {
+                    console.log(backData);
+                    //渲染页面
+                    // $('input.username').val(backData.data.username);
+
+                    // $('input.nickname').val(backData.data.nickname);
+
+                    // $('input.email').val(backData.data.email);
+
+                    // $('input.password').val(backData.data.password);
+                    
+                    //遍历对象优化代码
+                    for (var key in backData.data) {
+                        $('input.' + key).val(backData.data[key]);
+                    }
+                    $('img.user_pic').attr('src', backData.data.userPic);
+                }
+            });
+
+            
+        });
+    </script>
+
+
+</body>
+
+</html>
