@@ -32,6 +32,7 @@ $('#exampleInputFile').change(function () {
     //获取用户选择的图片
     var file = this.files[0];
     //将文件转为src路径
+    //createObjectURL()创建一个URL的file对象
         var url = URL.createObjectURL(file);
         //将url路径赋值给img标签的src
         $('.user_pic').attr('src', url);
@@ -47,6 +48,8 @@ $('#form').on('submit', function (e) {
         url: BigNew.user_edit,
         type: 'post',
         dataType: 'json',
+        //Form只能传DOM对象 原生
+        
         data: new FormData(this),
             contentType: false,
             processData: false,
