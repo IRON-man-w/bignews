@@ -117,7 +117,7 @@
                     $(this).next().slideToggle();
                     //旋转90度切换
                     $(this).find('b').toggleClass('rotate0');
-                    //默认选中第一个 : dom对象
+                    //默认选中第一个 : dom对象  加[0]就是为了变成dom对象
                     $('.level02>li>a').first()[0].click();
                 } else {
                     //如果点击的不是文章管理一级菜单列表,则移除二级列表的选中样式
