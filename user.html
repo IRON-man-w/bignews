@@ -66,6 +66,34 @@
 
 
     <script>
+
+        /*
+             页面一加载: ajax请求个人详情信息,渲染页面
+            */
+        $.ajax({
+            url: 'BigNew.user_detail',
+            type: 'get',
+            dataType: 'json',
+            data: '',
+            success: function (backData) {
+                console.log(backData);
+                //渲染页面
+                // $('input.username').val(backData.data.username);
+
+                // $('input.nickname').val(backData.data.nickname);
+
+                // $('input.email').val(backData.data.email);
+
+                // $('input.password').val(backData.data.password);
+
+                //遍历对象优化代码
+                for (var key in backData.data) {
+                    $('input.' + key).val(backData.data[key]);
+                }
+                $('img.user_pic').attr('src', backData.data.userPic);
+            }
+        });
+
         //文件预览
         //给file表单元素注册onchange事件
         $('#exampleInputFile').change(function () {
