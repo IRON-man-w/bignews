@@ -44,8 +44,8 @@ $('#form').on('submit', function (e) {
     //禁用表单默认提交事件
     e.preventDefault();
     $.ajax({
-        url: '',
-        type: 'get',
+        url: 'BigNew.user_edit',
+        type: 'post',
         dataType: 'json',
         data: '',
         success: function (backData) {
