@@ -88,11 +88,13 @@
         //页面一加载发送ajax请求数据
         $(function () {
             $.ajax({
-                url: 'BigNew.category_list',
+                url: BigNew.category_list,
                 type: 'get',
                 dataType: 'json',
                 success: function (backData) {
                     console.log(backData);
+                    //模板引擎渲染页面
+                    $('.category_table>tbody').html(template('art_cat',backData));
                 }
             });
         })

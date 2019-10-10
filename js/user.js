@@ -3,7 +3,7 @@ $(function(){
      页面一加载: ajax请求个人详情信息,渲染页面
     */
    $.ajax({
-    url: 'BigNew.user_detail',
+    url: BigNew.user_detail,
     type: 'get',
     dataType: 'json',
     data: '',
@@ -44,10 +44,12 @@ $('#form').on('submit', function (e) {
     //禁用表单默认提交事件
     e.preventDefault();
     $.ajax({
-        url: 'BigNew.user_edit',
+        url: BigNew.user_edit,
         type: 'post',
         dataType: 'json',
-        data: '',
+        data: new FormData(this),
+            contentType: false,
+            processData: false,
         success: function (backData) {
             console.log(backData);
             if (backData.code == 200) {
