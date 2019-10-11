@@ -127,94 +127,7 @@
                         如果e.relatedTarget是编辑 ->则执行编辑按钮逻辑
         */
 
-        //模态框出现之前
-        $('#myModal').on('show.bs.modal', function (e) {
-            //获取模态框事件触发源
-            var target = e.relatedTarget;
-            console.log(e.relatedTarget);
-            if (target == $('#xinzengfenlei')[0]) {
-                //执行新增分类逻辑
-                alert('你点击了新增按钮');
-                //设置按钮文本为新增
-                $('#myModal .confirm').text('新增');
-            } else {
-                //执行编辑分类逻辑
-                alert('你点击了编辑按钮');
-                //设置按钮文本为编辑
-                $('#myModal .confirm').text('编辑');
-            }
-        });
 
-
-        //取消按钮点击事件
-        $('#myModal .cancel').on('click', function (e) {
-            //隐藏模态框
-            $('#myModal').modal('hide');
-        });
-
-        //确认按钮点击事件
-        $('#myModal .confirm').on('click', function (e, a) {
-            if ($(this).text() == '新增') {
-                alert('新增成功');
-                //刷新页面
-                window.location.reload();
-            } else {
-                //编辑
-                alert('编辑成功');
-                //刷新页面
-                window.location.reload();
-            }
-        });
-
-
-
-        //新增文章分类功能
-        //模态框出现之前
-        $('#myModal').on('show.bs.modal', function (e) {
-            var target = e.relatedTarget;
-            if (target == $('#xinzengfenlei')[0]) {
-                //新增分类逻辑
-                //(1)设置按钮文本为新增
-                $('#myModal .confirm').text('新增');
-            } else {
-                //执行编辑分类逻辑
-            }
-        });
-
-        //2.取消按钮点击事件
-        $('#myModal .cancel').on('click', function (e) {
-            // do something...
-            //清空文本框数据 ：这是DOM原生的方法
-            $('#form')[0].reset();
-            //隐藏模态框
-            $('#myModal').modal('hide')
-        });
-
-        //3.确认按钮点击事件
-        $('#myModal .confirm').on('click', function (e, a) {
-            // do something...
-            if ($(this).text() == '新增') {
-                $.ajax({
-                    url: BigNew.category_add,
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        name: $('#recipient-name').val(),
-                        slug: $('#message-text').val(),
-                    },
-                    success: function (backData) {
-                        if (backData.code == 201) {
-                            alert('新增成功');
-                            window.location.reload();
-                        } else {
-                            alert(backData.msg);
-                        };
-                    }
-                });
-            } else {//编辑
-
-            }
-        });
 
 
 
@@ -231,7 +144,100 @@
                     $('.category_table>tbody').html(template('art_cat', backData));
                 }
             });
-        })
+
+
+
+            //模态框出现之前
+            $('#myModal').on('show.bs.modal', function (e) {
+                //获取模态框事件触发源
+                var target = e.relatedTarget;
+                console.log(e.relatedTarget);
+                if (target == $('#xinzengfenlei')[0]) {
+                    //执行新增分类逻辑
+                    alert('你点击了新增按钮');
+                    //设置按钮文本为新增
+                    $('#myModal .confirm').text('新增');
+                } else {
+                    //执行编辑分类逻辑
+                    alert('你点击了编辑按钮');
+                    //设置按钮文本为编辑
+                    $('#myModal .confirm').text('编辑');
+                }
+            });
+
+
+            //取消按钮点击事件
+            $('#myModal .cancel').on('click', function (e) {
+                //隐藏模态框
+                $('#myModal').modal('hide');
+            });
+
+            //确认按钮点击事件
+            $('#myModal .confirm').on('click', function (e, a) {
+                if ($(this).text() == '新增') {
+                    alert('新增成功');
+                    //刷新页面
+                    window.location.reload();
+                } else {
+                    //编辑
+                    alert('编辑成功');
+                    //刷新页面
+                    window.location.reload();
+                }
+            });
+
+
+
+            //新增文章分类功能
+            //模态框出现之前
+            $('#myModal').on('show.bs.modal', function (e) {
+                var target = e.relatedTarget;
+                if (target == $('#xinzengfenlei')[0]) {
+                    //新增分类逻辑
+                    //(1)设置按钮文本为新增
+                    $('#myModal .confirm').text('新增');
+                } else {
+                    //执行编辑分类逻辑
+                }
+            });
+
+            //2.取消按钮点击事件
+            $('#myModal .cancel').on('click', function (e) {
+                // do something...
+                //清空文本框数据 ：这是DOM原生的方法
+                $('#form')[0].reset();
+                //隐藏模态框
+                $('#myModal').modal('hide')
+            });
+
+            //3.确认按钮点击事件
+            $('#myModal .confirm').on('click', function (e, a) {
+                // do something...
+                if ($(this).text() == '新增') {
+                    $.ajax({
+                        url: BigNew.category_add,
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            name: $('#recipient-name').val(),
+                            slug: $('#message-text').val(),
+                        },
+                        success: function (backData) {
+                            if (backData.code == 201) {
+                                alert('新增成功');
+                                window.location.reload();
+                            } else {
+                                alert(backData.msg);
+                            };
+                        }
+                    });
+                } else {//编辑
+
+                }
+            });
+
+
+        });
 
 
     </script>
