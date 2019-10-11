@@ -87,6 +87,18 @@
     <script>
         // 入口函数
         $(function () {
+            //加载日期插件
+            jeDate('#testico', {
+                trigger: 'click',
+                theme: { bgcolor: "#00A680", pnColor: "#00DDAA" },//绿色主题
+                format: "YYYY-MM-DD",
+                isinitVal: true,
+            });
+
+            document.querySelector('#btn').onclick = function () {
+                console.log(document.querySelector('#testico').value);
+            };
+
             //1.获取artile_list页面传递过来的文章id
             var id = window.location.href.split('=')[1];
             console.log(id);

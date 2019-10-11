@@ -195,9 +195,41 @@
            }
 
 
-            /*4.删除 ：  */
+            /*4.删除 ：  注意点: 删除按钮是动态添加的,需要注册委托事件 */
             /* 5.编辑 ： a标签href跳转（页面间传参） */
+            //点击编辑按钮 : 需要跳转编辑文章页面 使用 window.location.href传参
             /* 6.发布 ： a标签href跳转 */
+            //点击删除按钮: 该接口需要传递文章的id,可以给删除按钮添加自定义行内属性data-id存储文章id
+            $('.table>tbody').on('click','.delete',function(){
+                $.ajax({
+                    url:BigNew.article_delete,
+                    type:'get',
+                    dataType:'json',
+                    data:{
+                        id:$(this).attr('data-id')
+                    },
+                    success: function(backData){
+                    console.log(backData);
+                    if(backData.code == 204){
+                        alert('删除成功');
+                        window.location.reload();
+                    }
+                  }
+                });
+            });
+
+            //点击发文章,设置左侧导航栏 发布文章 高亮
+            $('#release_btn').click(function(){
+                /*
+                $(选择器,DOM) : 默认第二个参数就是当前页面的DOM树
+                $(选择器,window.parent.document) : 选择父窗口的元素
+                */
+               $('.level02>li:eq(1)',window.parent.document).addClass('active').siblings().removeClass('active ');
+
+
+            })
+
+            
         })
 
 
