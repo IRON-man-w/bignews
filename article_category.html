@@ -60,7 +60,7 @@
             <td>{{ v.slug }}</td>
             <td class="text-center">
                 <a href="javascript:void(0);" data-id="{{ v.id }}" data-toggle="modal" data-target="#myModal" class=" btn btn-info btn-xs">编辑</a>
-                <a href="javascript:void(0);" data-id="{{ v.id }}" class="btn btn-danger btn-xs">删除</a>
+                <a href="javascript:void(0);" data-id="{{ v.id }}" class="btn btn-danger btn-xs btn-delete">删除</a>
             </td>
         </tr>
         {{ /each }}
@@ -142,6 +142,12 @@
                 } else {
                     //编辑按钮
                     $('.btn-confirm').text('编辑');
+                    //传递文章name
+                    $('#recipient-name').val($(e.relatedTarget).parent().prev().prev().text());
+                    //传递文章的slug
+                    $('#message-text').val($(e.relatedTarget).parent().prev().text());
+                    //传递文章的id
+                    $('.btn-confirm').attr('data-id',$(e.relatedTarget).attr('data-id'));
                 }
             });
 
@@ -171,6 +177,23 @@
                 } else {
                     console.log('点击编辑');
                     /* 3.编辑文章类别 */
+                    $.ajax({
+                        url:BigNew.category_edit,
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            name:$('#recipient-name').val(),
+                            slug:$('#message-text').val(),
+                            id:$(this).attr('data-id')
+                        },
+                        success: function(backData){
+                            console.log(backData);
+                            if(backData.code == 200){
+                                alert('编辑成功');
+                                window.location.reload();
+                            }
+                        }
+                    });
 
                 }
             });
@@ -183,7 +206,28 @@
 
 
 
-            /* 4.删除文章类别 */
+            /* 4.删除文章类别
+            注意点： 删除按钮是模板引擎动态添加的，需要注册委托事件
+            */
+            $('.table>tbody').on('click','.btn-delete',function(){
+                var id = $(this).attr('data-id');
+                console.log(id);
+                $.ajax({
+                    url:BigNew.category_delete,
+                    type:'post',
+                    dataType:'json',
+                    data:{ id:id },
+                    success: function(backData){
+                        console.log(backData);
+                        if(backData.code == 204){
+                            alert('删除成功');
+                            window.location.reload();
+                        }
+                        
+                    }
+                });
+                
+            });
         });
     </script>
 
