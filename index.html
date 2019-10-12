@@ -113,10 +113,12 @@
                 //排他思想修改样式
                 $(this).addClass('active').siblings().removeClass('active');
                 //如果点击的是文章管理:则应该下滑二级列表ul
+                //hasClass()检查当前元素是否含有某个特定的类名
                 if ($(this).next().hasClass('level02')) {
                     //滑入滑出切换
                     $(this).next().slideToggle();
                     //旋转90度切换
+                    //toggleClass()如果不存在就添加类 存在就删除
                     $(this).find('b').toggleClass('rotate0');
                     //默认选中第一个 : dom对象  加[0]就是为了变成dom对象
                     $('.level02>li>a').first()[0].click();

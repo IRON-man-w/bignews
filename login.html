@@ -43,8 +43,11 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span
+              aria-hidden="true">&times;
+            </span>
+          </button>
           <h4 class="modal-title">友情提示</h4>
         </div>
         <div class="modal-body">
@@ -102,9 +105,10 @@
               // alert('登录成功');
               //设置模态框内容
               $('.modal-body>p').text(backData.msg);
-              $('#myModal').modal();
+              $('#myModal').modal({keyboard : true});
               //给模态框设置隐藏事件
               $('#myModal').on('hidden.bs.modal', function (e) {
+                //将密码账号信息保存进硬盘中
                 localStorage.setItem('token', backData.token);
                 // do something...
                 window.location.href = './index.html';
