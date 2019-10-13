@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        页面一加载:渲染所有的分类列表
+        */
+        $.ajax({
+            url: BigNew.category_list,
+            type: 'get',
+            dataType: 'json',
+            data: '',
+            success: function (backData) {
+                console.log(backData);
+                //数据响应之后,模板引擎渲染页面
+                $('.category').html(template('cat_list', backData));
+            }
+        });
+
+        //获取从list页面传递过来的参数 : 文章ID
+        var id = window.location.href.split('=')[1];
+        console.log(id);
+
+        //通过id查询文章详细信息
+        $.ajax({
+            url: BigNew.article_search,
+            type: 'get',
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (backData) {
+                console.log(backData);
+                //渲染文章详情
+                $('.title').val(backData.data.title);
+                $('.category').val(backData.data.categoryId);
+                $('.article_cover').attr('src', backData.data.cover);
+                $('#testico').val(backData.data.data);
+
+                /*
+                注意点:
+                tinymce插件底层复杂,会动态添加元素,这个操作需要时间
+                如果ajax请求过快,有可能服务器返回了数据这个插件还没有加载完 导致插件无法获取
+                解决方案:
+                1.添加loading效果
+                2.定时器过一会加载
+                */
+                setTimeout(function () {
+                    tinymce.activeEditor.setContent(backData.data.content);
+                }, 200);
+            }
+        });
+
+        /*文件预览*/
+        //给file表单元素注册on change事件
+        //1.给file表单元素注册onchange事件
+        $('#inputCover').change(function () {
+            //1.2 获取用户选择的图片
+            var file = this.files[0];
+            //1.3 将文件转为src路径
+            var url = URL.createObjectURL(file);
+            //1.4 将url路径赋值给img标签的src
+            $('.article_cover').attr('src', url);
+        });
+
+
+        /*编辑文章:文件上传*/
+        //注意点:表单按钮需要阻止默认行为
+        //编辑
+        $('.btn-edit').click(function(e){
+            e.preventDefault();
+            articleEdit('已发布');
+        });
+
+        //存为草稿
+        $('.btn-draft').click(function(e){
+            e.preventDefault();
+            articleEdit('草稿');
+        });
+
+
+        function articleEdit(state){
+            //创建Form对象 : 参数是表单dom对象
+            var fd = new FormData($('#form')[0]);
+            console.log(fd);
+            /*
+            注意点: 1.formdata只能捕捉form表单中有name属性的input的value值
+            2.如果接口文档参数 > form能够捕捉的参数数量
+            3.可以手动使用append()
+            */
+           //追加参数
+           fd.append('id',id);
+           fd.append('date',$('#testico').val());
+           fd.append('state',state);
+           fd.append('content',tinymce.activeEditor.getContnt());
+           $.ajax({
+               url:BigNew.article_edit,
+               type:'post',
+               dataType:'json',
+               data:fd,
+               contentType: false,
+                processData: false,
+               success: function(backData){
+               console.log(backData);
+               if(backData.code == 200){
+                   alert('修改成功');
+                   //返回上一页
+                   window.history.back();
+               }else{
+                   alert(backData.msg);
+               }
+               }
+           });
+        }
+    </script>
+</body>
+
+</html>

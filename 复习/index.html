@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+      $(function(){
+          /*
+          查询个人信息
+          页面加载 发送ajax请求
+          响应数据之后,渲染到页面
+          */
+         $.ajax({
+             url:'http://localhost:8080/api/v1/admin/user/info',
+             type:'get',
+             dataType:'json',
+             
+             success: function(backData){
+              console.log(backData);
+              //渲染页面
+              $('.user_info>img').attr('src',backData.data.userPic);
+              $('.user_center_link>img').attr('src',backData.data.userPic);
+              $('.user_info>span').text('欢迎' + backData.data.nickname);
+             }
+         });
+
+         /*
+         退出登录
+         删除token
+         跳转登录页
+         */
+        $('.logout').click(function(){
+            //删除token
+            localStorage.removeItem('token');
+            //跳转登录 页面
+            window.location.href = './login.html';
+        });
+
+
+        //点击左侧导航栏效果
+        //一级列表
+        $('.level01').click(function(){
+            //排他思想
+            $(this).addClass('active').siblings().removeClass('active');
+            //如果点击的是文章管理,则应该下滑二级列表ul
+            //hasClass()检查当前元素是否含有某个特定的类名
+            if($(this).next().hasClass('level02')){
+                //滑出滑入切换
+                $(this).next().slideToggle();
+                //旋转90度切换
+                //toggleClass(),如果不存在就添加,存在就删除
+                $(this).find('b').toggleClass('rotate0');
+                //默认选中第一个:dom对象 加[0]就是为了变成dom对象
+                $('.level02>li>a').first()[0].click();
+            }else {
+                //如果点击 的 不是文章管理一级菜单列表,则移除二级列表的选中样式
+                $('.level02>li').removeClass('active');
+            }
+        });
+        //二级 列表
+        $('.level02>li').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+      }); 
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+      $(function(){
+          /*
+          登录功能
+          给登录按钮注册点击事件
+          阻止默认跳转
+          获取用户名密码
+          ajax请求
+          成功之后,跳转首页
+          */
+
+          //登录按钮设置点击事件
+          $('.input_sub').click(function(e){
+              //阻止默认跳转
+              e.preventDefault();
+              //获取用户名和密码
+              var username = $('.input_txt').val();
+              var password = $('.input_pass').val();
+
+              //非空判断
+              if (username.trim().length == 0 || password.trim().length == 0){
+                  //alert('请输入用户名和密码)
+                  //使用模态框
+                  $('.modal-body>p').text('请输入用户名和密码');
+                  $('#myModal').modal();
+                  return;
+              };
+
+              $.ajax({
+                  url:'http://localhost:8080/api/v1/admin/user/login',
+                  type:'post',
+                  dataType:'json',
+                  data:{
+                      username : username,
+                      password : password,
+                  },
+                  success: function(backData){
+                  console.log(backData);
+                  if(backData.code == 200){
+                      $('.modal-body>p').text(backData.msg);
+                      $('#myModal').modal({keybosrd : true});
+                      //给模态框隐藏事件
+                      $('#myModal').on('hidden.bs.modal',function(e){
+                          //将密码账号信息保存进硬盘中
+                          localStorage.setItem('token',backData.token);
+
+                          window.location.href = './index.html';
+                      })
+                  }else{
+                      //设置模态框内容
+                      $('.modal-body>p').text(backData.msg);
+                      $('#myModal').modal();
+                  }
+                  }
+              });
+          })
+      })
+    </script>
+</body>
+</html>

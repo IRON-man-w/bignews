@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="./libs/http.js"></script>
+    <script>
+        //入口函数
+        $(function () {
+            //页面加载,默认请求所有的分类列表
+            $.ajax({
+                url: BigNew.category_list,
+                type: 'get',
+                dataType: 'json',
+                data: '',
+                success: function (backData) {
+                    console.log(backData);
+                    $('#selCategory').html(template('cat_list', backData));
+                }
+            });
+
+            /*
+            页面一加载:默认请求文章列表数据
+  
+            筛选按钮点击事件
+            筛选按钮 : #btnSearch
+            注意点 : 表单按钮阻止默认行为
+            文章类别下拉菜单 : #selCategory
+            文章状态下拉菜单 : #selStatus
+            */
+            $('#btnSearch').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: BigNew.article_query,
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        type: $('#selCategory').val(),
+                        state: $('#selStatus').val(),
+                        page: 1,//显示首页
+                        perpage: 10//每页显示10个
+                    },
+                    success: function (backData) {
+                        console.log(backData);
+                        $('table>tbody').html(template('art_list', backData));
+                        //初始化分页插件
+                        //先销毁已经存在的插件
+                        $('#pagination').twbsPagination('destroy');
+                        //初始化新的插件
+                        $('#pagination').twbsPagination({
+                            totalPages: backData.data.totalPage,//总页数
+                            startPage: 1,//起始页数
+                            visiblePages: 6,//可见页数
+                            first: '首页',
+                            prev: '上一页',
+                            next: '下一页',
+                            last: '尾页',
+                            onPageClick: function (event, page) {
+                                $('#page-content').text('Page ' + page);
+                                console.log(page);
+                                getArticleList(page);
+                            }
+                        });
+
+                    }
+                });
+            });
+
+            //主动触发筛选按钮点击事件
+            $('#btnSearch').trigger('click');
+
+            function getArticleList(currentPage) {
+                $.ajax({
+                    url: BigNew.article_query,
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        type: $('#selCategory').val(),
+                        state: $('#selStatus').val(),
+                        page: currentPage,
+                        perpage: 10
+                    },
+                    success: function (backData) {
+                        $('.table>tbody').html(template('art_list', backData));
+                    }
+                });
+            }
+
+
+            //删除: 注意点 : 删除按钮是动态添加的,需要注册委托事件
+            //编辑 : a标签href跳转(页面间传参)
+            //点击编辑按钮 : 需要跳转编辑文章页面 使用 window.location.href传参
+            //发布: a标签href跳转
+            //点击删除按钮 : 该接口需要传递文章的id,可以给删除添加自定义行内属性data-id存储文章id
+            $('.table>tbody').on('click', '.delete', function () {
+                $.ajax({
+                    url: BigNew.article_delete,
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        id: $(this).attr('data-id')
+                    },
+                    success: function (backData) {
+                    console.log(backData);
+                    if(backData.code == 204){
+                        alert('删除成功');
+                        window.location.reload();
+                    }
+                    }
+                });
+            });
+
+            //点击发文章,设置左侧导航栏 发布文章 高亮
+            $('#release_btn').click(function(){
+                /*
+                $(选择器,DOM) : 默认第二个参数就是当前页面的DOM树
+                $(选择器,window.parent.document) : 选择父窗口的元素
+                */
+               $('.level02>li:eq(1)',window.parent.document).addClass('active').siblings().removeClass('active');
+            })
+
+
+
+        })
+    </script>
+</body>
+
+</html>

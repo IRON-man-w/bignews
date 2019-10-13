@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        $(function () {
+            $.ajax({
+                url: BigNew.category_list,
+                type: 'get',
+                dataType: 'json',
+                data: '',
+                success: function (backData) {
+                    console.log(backData);
+                    $('.table>tbody').html(template('cat_list', backData
+                    ));
+                }
+            })
+
+            /*
+            点击新增与编辑都要弹出模态框
+            新增逻辑 
+            模态框表单清空
+            模态框显示新增按钮
+ 
+            编辑 逻辑
+            模态框显示分类
+            模态框显示编辑按钮
+ 
+            结合bootstrap官网
+            给新增按钮和编辑按钮添加 data-toggle = 'modal' data-target = 'myModal'
+            作用: 点击的时候弹出模态框
+ 
+            给模态框注册  show.bs.modal 事件 : 模态框出现之前触发
+            作用 : 获取事件对象 e.relatedTarget 获取模态框事件触发源
+ 
+            给模态框取消按钮注册点击事件
+            清空表单 原生DOM.reset();
+            */
+
+            $('#myModal').on('shown.bs.modal', function (e) {
+                if (e.relatedTarget == $('#xinzengfenlei')[0]) {
+                    //新增按钮
+                    $('.btn-confirm').text('新增');
+                } else {
+                    //编辑按钮
+                    $('.btn-confirm').text('编辑');
+                    $('#recipient-name').val($(e.relatedTarget).parent().prev().prev().text());
+
+                    $('#message-text').val($(e.relatedTarget).parent().prev().prev().text());
+
+                    $('.btn-confirm').attr('data-id', $(e.relatedTarget).attr('data-id'));
+                }
+            });
+
+            //模态框确认按钮
+            $('.btn-confirm').click(function () {
+                if ($(this).text() == '新增') {
+                    console.log('点击新增');
+                    $.ajax({
+                        url: BigNew.category_add,
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            name: $('#recipient-name').val(),
+                            slug: $('#message-text').val()
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            if (backData.code == 201) {
+                                alert('新增成功');
+                                window.location.reload();
+                            }
+                        }
+                    });
+                } else {
+                    console.log('点击编辑');
+                    //编辑文章类别
+                    $.ajax({
+                        url: BigNew.category_edit,
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            name: $('#recipient-name').val(),
+                            slug: $('#message-text').val(),
+                            id: $(this).attr('data-id'),
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            if (backData.code == 200) {
+                                alert('编辑成功');
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+            });
+
+            //模态框取消按钮
+            $('.btn-cancel').click(function () {
+                //表单清空
+                //js原生方法 reset() 实现重置
+                $('.modal-body>form')[0].reset();
+            });
+
+            //删除文章类别
+            //注意点: 删除按钮是模板引擎添加的,需要注册委托事件
+            $('.table>tbody').on('click', '.btn-delete', function () {
+                var id = $(this).attr('data-id');
+                console.log(id);
+                $.ajax({
+                    url: BigNew.category_delete,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        id: id,
+                    },
+                    success: function (backData) {
+                        console.log(backData);
+                        if (backData.code == 204) {
+                            alert('删除成功');
+                            window.location.reload();
+                        }
+                    }
+                });
+
+
+
+            });
+        })    
+    </script>
+</body>
+
+</html>
