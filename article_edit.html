@@ -155,7 +155,9 @@
             });
 
             /*5.编辑文章 
-            1.细节：编辑文字接口文档参数很多，FromData只能自动获取表单中部分参数
+            1.细节：编辑文字接口文档参数很多，FromData只能捕捉form表单中有name属性的input的value的值
+            如果接口文档参数 > form能够捕捉的参数数量
+            可以手动使用append()
                 解决方案：使用 FromData的append()方法手动添加参数
             2.由于编辑按钮和草稿按钮业务逻辑相同，可以封装一个函数
                 解决方案：只是state参数不同，，将state作为参数传递
@@ -179,6 +181,7 @@
             function editArticlie(state) {
                 //(3)创建fd对象
                 var fd = new FormData($('#form')[0]);
+                console.log(fd);
                 //追加一个修改后的内容
                 fd.append('content', tinyMCE.activeEditor.getContent());
                 //追加文章id到fd中去.
