@@ -10,10 +10,19 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
+    <!-- 日期插件 -->
+    <link type="text/css"  rel="stylesheet" href="./js/jedate/css/jeDate-test.css">
+    <link rel="stylesheet" href="./js/jedate/css/jedate.css">
     <!-- jq -->
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/jquery-1.12.4.min.js"></script>
     <!-- 模板引擎 -->
     <script src="./js/template-web.js"></script>
+    <!-- jsdata日期插件 -->
+    <script src="./libs/jedate/js/jedate.js"></script>
+    <!-- tinymce富文本编辑器插件 -->
+    <script src="./js/tinymce/tinymce.min.js"></script>
+    <!-- jsData + tinumce 配置文件 -->
+    <script src="./js/config.js"></script>
 </head>
 
 <body>
@@ -83,21 +92,10 @@
         <option value='{{v.id}}'>{{v.name}}</option>
         {{/each}}
     </script>
-
+    <script src="./libs/http.js"></script>
     <script>
         // 入口函数
         $(function () {
-            //加载日期插件
-            jeDate('#testico', {
-                trigger: 'click',
-                theme: { bgcolor: "#00A680", pnColor: "#00DDAA" },//绿色主题
-                format: "YYYY-MM-DD",
-                isinitVal: true,
-            });
-
-            document.querySelector('#btn').onclick = function () {
-                console.log(document.querySelector('#testico').value);
-            };
 
             //1.获取artile_list页面传递过来的文章id
             var id = window.location.href.split('=')[1];
